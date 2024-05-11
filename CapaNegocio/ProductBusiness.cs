@@ -24,6 +24,17 @@ namespace CapaNegocio
             return result;
         }
 
+        public bool UpdateProduct(Product product)
+        {
+            DProduct data = new DProduct();
+            return data.UpdateProduct(product);
+        }
 
-}
+        public bool DeleteProduct(int productId)
+        {
+            DProduct data = new DProduct();
+            return data.DeleteProduct(productId);
+        }
+
+    }
 }

@@ -16,33 +16,10 @@ using System.Windows.Shapes;
 
 namespace Semana07
 {
-    //    /// <summary>
-    //    /// Lógica de interacción para ListProducts.xaml
-    //    /// </summary>
-    //    public partial class ListProducts : Window
-    //    {
-    //        public ListProducts()
-    //        {
-    //            InitializeComponent();
-    //            CargarDatos();
-    //        }
-
-    //        private void CargarDatos()
-    //        {
-    //            CapaDatos.DProduct data = new CapaDatos.DProduct(); 
-    //            List<Product> getProducts = data.getProducts(); 
-    //            dataGridEmpleados.ItemsSource = getProducts;
-    //        }
-    //        //private void CargarDatosByName()
-    //        //{
-
-    //        //}
-    //    }
-    //}
-
     public partial class ListProducts : Window
     {
         private ProductBusiness productBusiness;
+        private Product productoSeleccionado;
 
         public ListProducts()
         {
@@ -56,18 +33,6 @@ namespace Semana07
             List<Product> getProducts = productBusiness.GetProducts();
             dataGridEmpleados.ItemsSource = getProducts;
         }
-        //private void CargarDatos()
-        //{
-        //    List<Product> getProducts = productBusiness.GetProducts();
-
-        //    // Imprimir los datos recibidos antes de establecerlos en el DataGrid
-        //    foreach (var product in getProducts)
-        //    {
-        //        Console.WriteLine($"ID: {product.productid}, Nombre: {product.name}, Precio: {product.price}, Stock: {product.stock}, Activo: {product.active}");
-        //    }
-
-        //    dataGridEmpleados.ItemsSource = getProducts;
-        //}
 
         private void BuscarProducto_Click(object sender, RoutedEventArgs e)
         {
@@ -79,10 +44,64 @@ namespace Semana07
             }
             else
             {
-                // Restablecer el origen de datos a la lista completa de productos
                 CargarDatos();
             }
         }
+        private void EditarProducto_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtener el producto seleccionado
+            productoSeleccionado = ((FrameworkElement)sender).DataContext as Product;
+
+            // Mostrar los campos de edición
+            editPanel.Visibility = Visibility.Visible;
+
+            // Cargar los valores del producto seleccionado en los campos de edición
+            txtProductName.Text = productoSeleccionado.name;
+            txtPrice.Text = productoSeleccionado.price.ToString();
+            txtStock.Text = productoSeleccionado.stock.ToString();
+            chkActive.IsChecked = productoSeleccionado.active;
+        }
+
+        private void GuardarEdicion_Click(object sender, RoutedEventArgs e)
+        {
+            productoSeleccionado.name = txtProductName.Text;
+            productoSeleccionado.price = decimal.Parse(txtPrice.Text);
+            productoSeleccionado.stock = int.Parse(txtStock.Text);
+            productoSeleccionado.active = chkActive.IsChecked ?? false;
+
+            bool success = productBusiness.UpdateProduct(productoSeleccionado);
+            if (success)
+            {
+                MessageBox.Show("El producto se actualizó correctamente.");
+            }
+            else
+            {
+                MessageBox.Show("Hubo un error al actualizar el producto. Por favor, inténtalo de nuevo.");
+            }
+
+            editPanel.Visibility = Visibility.Collapsed;
+            CargarDatos();
+        }
+
+        private void EliminarProducto_Click(object sender, RoutedEventArgs e)
+        {
+            Product productoSeleccionado = ((FrameworkElement)sender).DataContext as Product;
+            MessageBoxResult result = MessageBox.Show("¿Estás seguro de que deseas eliminar este producto?", "Confirmar eliminación", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                bool success = productBusiness.DeleteProduct(productoSeleccionado.productid);
+                if (success)
+                {
+                    MessageBox.Show("El producto se eliminó correctamente.");
+                }
+                else
+                {
+                    MessageBox.Show("Hubo un error al eliminar el producto. Por favor, inténtalo de nuevo.");
+                }
+                CargarDatos();
+            }
+        }
+
 
     }
 }

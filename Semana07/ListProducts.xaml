@@ -27,7 +27,31 @@
                 <DataGridTextColumn Header="price" Binding="{Binding price}" />
                 <DataGridTextColumn Header="stock" Binding="{Binding stock}" />
                 <DataGridTextColumn Header="active" Binding="{Binding active}" />
+                <DataGridTemplateColumn Header="Editar">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Editar" Click="EditarProducto_Click" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Eliminar">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Eliminar" Click="EliminarProducto_Click" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
+
+           
         </DataGrid>
+        <StackPanel x:Name="editPanel" Orientation="Vertical" Visibility="Collapsed" Margin="10">
+            <TextBox x:Name="txtProductName" Margin="0,5,0,5" />
+            <TextBox x:Name="txtPrice" Margin="0,5,0,5" />
+            <TextBox x:Name="txtStock" Margin="0,5,0,5" />
+            <CheckBox x:Name="chkActive" Content="Activo" Margin="0,5,0,5" />
+            <Button Content="Guardar" Click="GuardarEdicion_Click" Margin="0,5,0,5" />
+        </StackPanel>
     </Grid>
+    
 </Window>
